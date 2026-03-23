@@ -85,8 +85,16 @@ export default function RestaurantPermitMap() {
     return communityAreaColors[3];
   }
 
+  function toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
   function setAreaInteraction(feature, layer) {
-    const areaName = feature.properties.community;
+    const areaName = toTitleCase(feature.properties.community);
     const areaId = feature.properties.area_numbe;
     const permitCount = permitsByAreaId[String(areaId)] || 0;
     const permitShare = totalPermits > 0 ? permitCount / totalPermits : 0;
@@ -100,7 +108,7 @@ export default function RestaurantPermitMap() {
 
     layer.on("mouseover", () => {
       layer.bindPopup(
-        `<strong>${areaName}</strong><br/>Permits in ${year}: ${permitCount}<br/>Citywide share: ${(permitShare * 100).toFixed(1)}%`,
+        `<strong>${areaName}</strong><br/>Permits issued in ${year}: <strong>${permitCount}</strong><br/>Share of citywide permits: <strong>${(permitShare * 100).toFixed(1)}%</strong>`,
       );
       layer.openPopup();
     });
