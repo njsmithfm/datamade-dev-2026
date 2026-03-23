@@ -108,7 +108,7 @@ export default function RestaurantPermitMap() {
 
     layer.on("mouseover", () => {
       layer.bindPopup(
-        `<strong>${areaName}</strong><br/>Restaurant permits issued in ${year}: <strong>${permitCount}</strong><br/>Share of citywide permits: <strong>${(permitShare * 100).toFixed(1)}%</strong>`,
+        `<strong>${areaName}</strong><br/>Restaurant permits issued in ${year}: <strong>${permitCount}</strong><br/>Area share of citywide permits: <strong>${(permitShare * 100).toFixed(1)}%</strong>`,
       );
       layer.openPopup();
     });
