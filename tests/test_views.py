@@ -45,3 +45,19 @@ def test_map_data_view():
 
     assert response_data["Beverly"] == 2
     assert response_data["Lincoln Park"] == 3
+
+
+@pytest.mark.django_db
+def test_map_data_view_invalid_year():
+    # Test with invalid year (non-integer)
+    client = APIClient()
+    response = client.get(reverse("map_data"), {"year": "not_a_number"})
+    assert response.status_code == 400
+
+    # Test with year outside valid range (before 2016)
+    response = client.get(reverse("map_data"), {"year": 2015})
+    assert response.status_code == 400
+
+    # Test with year outside valid range (after 2026)
+    response = client.get(reverse("map_data"), {"year": 2027})
+    assert response.status_code == 400

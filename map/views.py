@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from map.models import CommunityArea
 from map.serializers import CommunityAreaSerializer
@@ -16,11 +17,23 @@ class Home(TemplateView):
 
 class MapDataView(APIView):
     def get(self, request):
+        year = request.query_params.get("year")
+        
+        if year is not None:
+            try:
+                year_int = int(year)
+            except ValueError:
+                raise ValidationError({"year": "Year must be a valid integer."})
+            
+            # Check if year is in valid range (2016-2026)
+            if year_int < 2016 or year_int > 2026:
+                raise ValidationError({"year": "Year must be between 2016 and 2026."})
+        
         community_areas = CommunityArea.objects.all()
         serializer = CommunityAreaSerializer(
             community_areas,
             many=True,
-            context={"year": request.query_params.get("year")},
+            context={"year": year},
         )
         return Response(serializer.data)
 

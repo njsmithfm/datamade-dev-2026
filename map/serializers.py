@@ -12,30 +12,16 @@ class CommunityAreaSerializer(serializers.ModelSerializer):
 
     def get_num_permits(self, obj):
         """
-        TODO: supplement each community area object with the number
-        of permits issued in the given year.
-
-        e.g. The endpoint /map-data/?year=2017 should return something like:
-        [
-            {
-                "ROGERS PARK": {
-                    area_id: 17,
-                    num_permits: 2
-                },
-                "BEVERLY": {
-                    area_id: 72,
-                    num_permits: 2
-                },
-                ...
-            }
-        ]
+        Return the number of permits issued in the given year.
+        
+        The view validates that year is a valid integer before passing it here,
+        so we only need to handle the case where no year is provided.
         """
         year = self.context.get("year")
-        try:
-            year = int(year)
-        except (TypeError, ValueError):
+        if year is None:
             return 0
-
+        
+        year = int(year)
         return RestaurantPermit.objects.filter(
             community_area_id=str(obj.area_id),
             issue_date__year=year,
